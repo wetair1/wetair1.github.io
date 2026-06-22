@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>yagami — terminal apps</title>
+<meta name="description" content="Python developer making lightweight terminal apps — ASCII dashboards, TUIs and CLI utilities.">
+<style>
+  :root{
+    --bg:#0a0a0a; --fg:#eaeaea; --dim:#8a8a8a; --line:#2a2a2a;
+    --card:#121212; --card-hover:#181818;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--fg);
+    font-family:"SFMono-Regular",ui-monospace,"JetBrains Mono","Cascadia Code",Consolas,monospace;
+    line-height:1.6; filter:grayscale(100%); -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--line)}
+  a:hover{border-color:var(--fg)}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+
+  header{position:sticky;top:0;z-index:10;background:rgba(10,10,10,.85);
+    backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .bar{display:flex;align-items:center;justify-content:space-between;
+    height:54px}
+  .brand{font-weight:700;letter-spacing:.5px}
+  .brand .blink{animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .lang{display:flex;gap:6px}
+  .lang button{font:inherit;background:transparent;color:var(--dim);
+    border:1px solid var(--line);padding:4px 10px;cursor:pointer;border-radius:4px;
+    transition:.2s}
+  .lang button.active,.lang button:hover{color:var(--fg);border-color:var(--fg)}
+
+  .hero{padding:90px 0 60px;border-bottom:1px solid var(--line)}
+  .term{background:var(--card);border:1px solid var(--line);border-radius:8px;
+    overflow:hidden;max-width:620px}
+  .term .top{display:flex;gap:7px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .dot{width:11px;height:11px;border-radius:50%;background:#555}
+  .term .body{padding:18px;font-size:15px;min-height:120px}
+  .term .body .ln{white-space:pre-wrap}
+  .prompt{color:var(--dim)}
+  .cursor{display:inline-block;width:9px;height:17px;background:var(--fg);
+    vertical-align:-3px;animation:blink 1.1s steps(1) infinite}
+  h1{font-size:30px;margin:26px 0 8px}
+  .tag{color:var(--dim);max-width:560px}
+  .badges{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap}
+  .badges img{filter:grayscale(100%) contrast(1.1)}
+
+  section{padding:56px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:2px;color:var(--dim);
+    margin-bottom:24px}
+  .about p{max-width:640px;color:var(--fg)}
+  .about p+p{margin-top:14px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;
+    padding:18px;transition:.22s ease;opacity:0;transform:translateY(14px)}
+  .card.in{opacity:1;transform:none}
+  .card:hover{background:var(--card-hover);transform:translateY(-4px);border-color:var(--fg)}
+  .card h3{font-size:17px;margin-bottom:6px}
+  .card h3 .arrow{color:var(--dim);transition:.2s}
+  .card:hover h3 .arrow{transform:translateX(4px);color:var(--fg)}
+  .card p{color:var(--dim);font-size:14px}
+  .card .meta{margin-top:12px;font-size:12px;color:var(--dim)}
+
+  footer{padding:40px 0 60px;text-align:center;color:var(--dim);font-size:13px}
+  footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <div class="brand">yagami<span class="blink">_</span></div>
+    <div class="lang">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="ru">RU</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" style="border-bottom:none">
+    <div class="term">
+      <div class="top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <div class="body">
+        <div class="ln"><span class="prompt">$ </span><span id="typed"></span><span class="cursor"></span></div>
+      </div>
+    </div>
+    <h1 data-en="Hi, I'm yagami" data-ru="Привет, я yagami">Hi, I'm yagami</h1>
+    <p class="tag"
+       data-en="Python developer making lightweight terminal apps — ASCII dashboards, TUIs and CLI utilities. Zero dependencies, runs anywhere."
+       data-ru="Python-разработчик, делаю лёгкие терминальные приложения — ASCII-дашборды, TUI и CLI-утилиты. Без зависимостей, работают везде.">
+       Python developer making lightweight terminal apps.</p>
+    <div class="badges">
+      <img src="https://img.shields.io/badge/python-3.8%2B-blue">
+      <img src="https://img.shields.io/badge/focus-terminal%20%2F%20CLI-lightgrey">
+      <img src="https://img.shields.io/badge/dependencies-0-success">
+      <img src="https://img.shields.io/badge/license-MIT-green">
+    </div>
+  </section>
+
+  <section class="about">
+    <h2 data-en="About" data-ru="Обо мне">About</h2>
+    <p data-en="I build small, dependency-free tools that live in your terminal — ASCII dashboards, interactive TUIs and tiny CLI utilities. Everything is pure Python 3 standard library, so it just runs, no pip install required."
+       data-ru="Я делаю небольшие инструменты без зависимостей, которые живут в терминале — ASCII-дашборды, интерактивные TUI и крохотные CLI-утилиты. Всё на чистой стандартной библиотеке Python 3 — просто запускается, без pip install.">
+       I build small, dependency-free tools that live in your terminal.</p>
+  </section>
+
+  <section>
+    <h2 data-en="Projects" data-ru="Проекты">Projects</h2>
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <div>
+    <a href="https://github.com/wetair1" target="_blank">GitHub</a>
+  </div>
+  <p style="margin-top:10px" data-en="Built with pure HTML/CSS · hosted on GitHub Pages" data-ru="Сделано на чистом HTML/CSS · хостинг GitHub Pages">Built with pure HTML/CSS · hosted on GitHub Pages</p>
+</footer>
+
+<script>
+const PROJECTS = [
+  {name:"devdash",   en:"ASCII dev-profile dashboard — GitHub / GitLab / Codeforces stats with a TUI.", ru:"ASCII-дашборд профиля — статистика GitHub / GitLab / Codeforces с TUI."},
+  {name:"asciidash", en:"Configurable ASCII info dashboard — clock, CPU/RAM/disk, weather, calendar.", ru:"Настраиваемый ASCII-дашборд — часы, CPU/RAM/диск, погода, календарь."},
+  {name:"ddtui",     en:"DDraceNetwork player stats + live server browser in a curses UI.", ru:"Статистика игроков DDraceNetwork + живой браузер серверов."},
+  {name:"iuse",      en:'"I USE ARCH BTW" ASCII banners — 432 distros & 72 DEs/WMs.', ru:'ASCII-баннеры "I USE ARCH BTW" — 432 дистрибутива и 72 DE/WM.'},
+  {name:"tuxgotchi", en:"Terminal ASCII tamagotchi with a living room.", ru:"Терминальный ASCII-тамагочи с комнатой."},
+  {name:"campfire",  en:"Animated ASCII campfire with chatting Linux penguins.", ru:"Анимированный ASCII-костёр с болтающими пингвинами Linux."}
+];
+
+let lang = "en";
+const grid = document.getElementById("grid");
+
+function renderGrid(){
+  grid.innerHTML = "";
+  PROJECTS.forEach((p,i)=>{
+    const a = document.createElement("a");
+    a.href = "https://github.com/wetair1/"+p.name;
+    a.target = "_blank";
+    a.style.borderBottom = "none";
+    a.innerHTML =
+      '<div class="card">'+
+        '<h3>'+p.name+' <span class="arrow">↗</span></h3>'+
+        '<p>'+p[lang]+'</p>'+
+        '<div class="meta">Python · stdlib · MIT</div>'+
+      '</div>';
+    grid.appendChild(a);
+    const card = a.querySelector(".card");
+    setTimeout(()=>observer.observe(card), 0);
+  });
+}
+
+function setLang(l){
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-"+l+"]").forEach(el=>{
+    el.textContent = el.getAttribute("data-"+l);
+  });
+  document.querySelectorAll(".lang button").forEach(b=>{
+    b.classList.toggle("active", b.dataset.lang===l);
+  });
+  renderGrid();
+}
+
+document.querySelectorAll(".lang button").forEach(b=>{
+  b.addEventListener("click", ()=>setLang(b.dataset.lang));
+});
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); } });
+},{threshold:.12});
+
+const phrases = ["whoami", "cat about.txt", "ls ~/projects", "python3 devdash.py --tui"];
+let pi=0, ci=0, deleting=false;
+const typed = document.getElementById("typed");
+function tick(){
+  const word = phrases[pi];
+  typed.textContent = word.slice(0, ci);
+  if(!deleting){
+    if(ci < word.length){ ci++; }
+    else { deleting=true; return setTimeout(tick, 1400); }
+  } else {
+    if(ci > 0){ ci--; }
+    else { deleting=false; pi=(pi+1)%phrases.length; }
+  }
+  setTimeout(tick, deleting?45:90);
+}
+
+setLang("en");
+tick();
+</script>
+</body>
+</html>
